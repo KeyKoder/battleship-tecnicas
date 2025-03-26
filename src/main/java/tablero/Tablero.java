@@ -3,20 +3,24 @@ package tablero;
 import barco.Boat;
 import position.Position;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Tablero {
-	private int width;
-	private int height;
-	private int[][] tablero;
-	private List<Boat> boats;
+	private Boat[][] grid;
 
-	public Tablero() {}
+	public Tablero(int width, int height) {
+		grid = new Boat[width][height];
+	}
 
-	public void setSize(int width, int height) {
-		this.width = width;
-		this.height = height;
-		this.tablero = new int[width][height];
+	public void addBoat(Boat boat, Set<Position> positions) {
+		for (Position position : positions) {
+			grid[position.getX()][position.getY()] = boat;
+		}
+		boat.setPosition(positions.stream().map(Position::toString).collect(Collectors.toSet()));
+	}
+
+	public Boat getBoatAt(Position position) {
+		return grid[position.getX()][position.getY()];
 	}
 }

@@ -7,13 +7,8 @@ public class TableroBuilder {
 
 	public TableroBuilder() {}
 
-	public TableroBuilder createTablero() {
-		this.tablero = new Tablero();
-		return this;
-	}
-
-	public TableroBuilder setSize(int x, int y) {
-		this.tablero.setSize(x, y);
+	public TableroBuilder createTablero(int w, int h) {
+		this.tablero = new Tablero(w, h);
 		return this;
 	}
 

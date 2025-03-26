@@ -1,8 +1,12 @@
 package barco;
 
-public class Canoe extends Boat {
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "canoes")
+public class Canoe extends Boat {
 	public Canoe() {
-		super(1);
+		super("Canoe", 1);
 	}
 }

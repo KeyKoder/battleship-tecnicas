@@ -1,8 +1,12 @@
 package barco;
 
-public class Frigate extends Boat {
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "frigates")
+public class Frigate extends Boat {
 	public Frigate() {
-		super(3);
+		super("Frigate", 3);
 	}
 }

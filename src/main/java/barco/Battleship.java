@@ -2,13 +2,14 @@ package barco;
 
 import position.Position;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.HashMap;
 
+@Entitçy
+@Table(name = "battleships")
 public class Battleship extends Boat {
-
-	private HashMap<Position, Boolean> containers;
 	public Battleship() {
-		super(5);
-		containers = new HashMap<>();
+		super("Battleship", 5);
 	}
 }
