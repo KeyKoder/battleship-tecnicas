@@ -3,31 +3,14 @@ package barco;
 import position.Position;
 import tablero.Orientation;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "ship")
 public abstract class Boat {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
 	private String type;
 	private int size;
 
-	@ElementCollection
-	@CollectionTable(name = "ship_position", joinColumns = @JoinColumn(name = "ship_id"))
-	@Column(name = "position")
 	private Position centerPosition;
 
-	@ElementCollection
-	@CollectionTable(name = "ship_orientation", joinColumns = @JoinColumn(name = "ship_id"))
-	@Column(name = "orientation")
 	private Orientation orientation;
 
-	@ElementCollection
-	@CollectionTable(name = "ship_hits", joinColumns = @JoinColumn(name = "ship_id"))
-	@Column(name = "hits")
 	private int hits;
 
 	public Boat() {}
@@ -35,15 +18,6 @@ public abstract class Boat {
 	public Boat(String type, int size) {
 		this.type = type;
 		this.size = size;
-	}
-
-	// Getters y Setters
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getType() {

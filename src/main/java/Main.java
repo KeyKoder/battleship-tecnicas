@@ -3,8 +3,6 @@ import position.Position;
 import tablero.Orientation;
 import tablero.Tablero;
 import tablero.TableroBuilder;
-import utils.BoatDAO;
-import utils.HibernateUtil;
 
 import java.util.*;
 
@@ -16,8 +14,8 @@ public class Main {
 	private static final int BOARD_HEIGHT = 10;
 
 	public static void main(String[] args) {
-		Tablero player1Tablero = configurePlayerTablero(1, null);
-		Tablero player2Tablero = configurePlayerTablero(2, null);
+		Tablero player1Tablero = configurePlayerTablero(1);
+		Tablero player2Tablero = configurePlayerTablero(2);
 
 		// Comenzar el juego
 		boolean gameOn = true;
@@ -63,7 +61,7 @@ public class Main {
 		}
 	}
 
-	private static Tablero configurePlayerTablero(int playerNumber, BoatDAO shipDAO) {
+	private static Tablero configurePlayerTablero(int playerNumber) {
 		TableroBuilder boardBuilder = new TableroBuilder(BOARD_WIDTH, BOARD_HEIGHT);
 		System.out.println("Configuración de barcos para el Jugador " + playerNumber + ":");
 
