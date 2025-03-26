@@ -1,5 +1,7 @@
 package position;
 
+import java.util.Objects;
+
 public class Position {
 	private int x;
 	private int y;
@@ -29,5 +31,17 @@ public class Position {
 		return "(" + x +
 				"," + y +
 				')';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Position position)) return false;
+		return x == position.x && y == position.y;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(x, y);
 	}
 }

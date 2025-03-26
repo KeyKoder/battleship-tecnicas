@@ -13,4 +13,8 @@ public abstract class Boat {
 	public void setPos(Position pos) {
 		this.pos = pos;
 	}
+
+	public boolean hit(Position pos) {
+		return pos.equals(this.pos);
+	}
 }
