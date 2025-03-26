@@ -1,19 +1,23 @@
 package tablero;
 
 import barco.Boat;
+import position.Position;
+
+import java.util.Set;
 
 public class TableroBuilder {
-	public Tablero tablero;
+	private Tablero tablero;
 
-	public TableroBuilder() {}
+	public TableroBuilder(int width, int height) {
+		this.tablero = new Tablero(width, height);
+	}
 
-	public TableroBuilder createTablero(int w, int h) {
-		this.tablero = new Tablero(w, h);
+	public TableroBuilder addBoat(Boat boat, Set<Position> positions) {
+		tablero.addBoat(boat, positions);
 		return this;
 	}
 
-	public TableroBuilder addBoat(Boat boat) {
-//		this.tablero.
-		return this;
+	public Tablero build() {
+		return tablero;
 	}
 }

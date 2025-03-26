@@ -21,7 +21,7 @@ public class BoatBuilder {
 	}
 
 	public BoatBuilder setPosition(int x, int y) {
-		boat.setPos(new Position(x, y));
+		boat.setPosition(new Position(x, y).toString());
 		return this;
 	}
 
