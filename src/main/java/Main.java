@@ -16,8 +16,11 @@ public class Main {
 	private static final int BOARD_HEIGHT = 10;
 
 	public static void main(String[] args) {
-		Tablero player1Tablero = configurePlayerTablero(1, null);
-		Tablero player2Tablero = configurePlayerTablero(2, null);
+		HibernateUtil.getSessionFactory();
+
+		BoatDAO boatDAO = new BoatDAO();
+		Tablero player1Tablero = configurePlayerTablero(1, boatDAO);
+		Tablero player2Tablero = configurePlayerTablero(2, boatDAO);
 
 		// Comenzar el juego
 		boolean gameOn = true;
@@ -63,13 +66,15 @@ public class Main {
 		}
 	}
 
-	private static Tablero configurePlayerTablero(int playerNumber, BoatDAO shipDAO) {
+	private static Tablero configurePlayerTablero(int playerNumber, BoatDAO boatDAO) {
 		TableroBuilder boardBuilder = new TableroBuilder(BOARD_WIDTH, BOARD_HEIGHT);
 		System.out.println("Configuración de barcos para el Jugador " + playerNumber + ":");
 
 		BoatBuilder boatBuilder = new BoatBuilder();
+		Boat boat = null;
 		for (int i = 0; i < MAX_SHIPS; i++) {
 			System.out.println("Seleccione el tipo de barco (1: Acorazado, 2: Fragata, 3: Canoa): ");
+			boat = null;
 			try {
 				int choice = scanner.nextInt();
 
@@ -96,14 +101,29 @@ public class Main {
 				continue;
 			}
 
-			System.out.println("Ingrese las coordenadas (x,y) para el barco (ejemplo: 1,1):");
-			boatBuilder.setPosition(readPosition());
-
 			System.out.println("Ingrese la orientación del barco (H / V):");
-			boatBuilder.setOrientation(readOrientation());
+			Orientation orientation = readOrientation();
+			boatBuilder.setOrientation(orientation);
 
-			boardBuilder.addBoat(boatBuilder.build());
-			//shipDAO.saveBoat(ship); // Guardar el barco en la base de datos
+			System.out.println("Ingrese las coordenadas (x,y) para el barco (ejemplo: 1,1):");
+			boolean valid = false;
+			Position pos = null;
+			while(!valid) {
+				pos = readPosition();
+				if((orientation == Orientation.HORIZONTAL && (pos.getX() < boatBuilder.getCurrentSize()/2 || BOARD_WIDTH-pos.getX() < boatBuilder.getCurrentSize()/2)) ||
+				(orientation == Orientation.VERTICAL && (pos.getY() < boatBuilder.getCurrentSize()/2 || BOARD_HEIGHT-pos.getY() < boatBuilder.getCurrentSize()/2))) {
+					System.out.println("Posición fuera del tablero. Intente de nuevo.");
+				}else {
+					valid = true;
+				}
+			}
+			boatBuilder.setPosition(pos);
+
+
+			boat = boatBuilder.build();
+
+			boardBuilder.addBoat(boat);
+			boatDAO.saveBoat(boat);
 		}
 
 		return boardBuilder.build();

@@ -15,17 +15,14 @@ public abstract class Boat {
 	private String type;
 	private int size;
 
-	@ElementCollection
 	@CollectionTable(name = "ship_position", joinColumns = @JoinColumn(name = "ship_id"))
 	@Column(name = "position")
 	private Position centerPosition;
 
-	@ElementCollection
 	@CollectionTable(name = "ship_orientation", joinColumns = @JoinColumn(name = "ship_id"))
 	@Column(name = "orientation")
 	private Orientation orientation;
 
-	@ElementCollection
 	@CollectionTable(name = "ship_hits", joinColumns = @JoinColumn(name = "ship_id"))
 	@Column(name = "hits")
 	private int hits;

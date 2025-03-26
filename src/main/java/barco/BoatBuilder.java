@@ -22,12 +22,16 @@ public class BoatBuilder {
 	}
 
 	public BoatBuilder setPosition(Position position) {
-		boat.setCenterPosition(position);
+		this.boat.setCenterPosition(position);
 		return this;
 	}
 	public BoatBuilder setOrientation(Orientation orientation) {
-		boat.setOrientation(orientation);
+		this.boat.setOrientation(orientation);
 		return this;
+	}
+
+	public int getCurrentSize() {
+		return this.boat.getSize();
 	}
 
 	public Boat build() {
