@@ -94,11 +94,25 @@ public class Main {
 				continue;
 			}
 
-			System.out.println("Ingrese las coordenadas (x,y) para el barco (ejemplo: 1,1):");
-			boatBuilder.setPosition(readPosition());
+
 
 			System.out.println("Ingrese la orientación del barco (H / V):");
-			boatBuilder.setOrientation(readOrientation());
+			Orientation orientation = readOrientation();
+			boatBuilder.setOrientation(orientation);
+
+			System.out.println("Ingrese las coordenadas (x,y) para el barco (ejemplo: 1,1):");
+			boolean valid = false;
+			Position pos = null;
+			while(!valid) {
+				pos = readPosition();
+				if((orientation == Orientation.HORIZONTAL && (pos.getX() < boatBuilder.getCurrentSize()/2 || BOARD_WIDTH-pos.getX() < boatBuilder.getCurrentSize()/2)) ||
+						(orientation == Orientation.VERTICAL && (pos.getY() < boatBuilder.getCurrentSize()/2 || BOARD_HEIGHT-pos.getY() < boatBuilder.getCurrentSize()/2))) {
+					System.out.println("Posición fuera del tablero. Intente de nuevo.");
+				}else {
+					valid = true;
+				}
+			}
+			boatBuilder.setPosition(pos);
 
 			boardBuilder.addBoat(boatBuilder.build());
 			//shipDAO.saveBoat(ship); // Guardar el barco en la base de datos

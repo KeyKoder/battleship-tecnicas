@@ -30,6 +30,10 @@ public class BoatBuilder {
 		return this;
 	}
 
+	public int getCurrentSize() {
+		return this.boat.getSize();
+	}
+
 	public Boat build() {
 		return boat;
 	}
