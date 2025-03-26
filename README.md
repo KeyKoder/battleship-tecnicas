@@ -19,11 +19,5 @@ La lógica del juego esta en la clase Main y todas las clases necesarias para el
 ## Ejercicio 7
 Se han configurado todas las clases de Barcos para que tengan persistencia utilizando JPA e Hibernate.
 
-No se ha conseguido progresar más en este aspecto debido a no haber podido conectarse a la base de datos H2.
-
-Se intentó con MySQL/MariaDB pero tampoco se consiguió establecer una conexión.
-
-En principio la configuración de las clases es correcta pero no se ha podido confirmar.
-
 ---
 ``https://github.com/KeyKoder/battleship-tecnicas.git``

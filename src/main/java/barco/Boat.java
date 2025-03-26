@@ -1,6 +1,7 @@
 package barco;
 
 import position.Position;
+import position.PositionConverter;
 import tablero.Orientation;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ public abstract class Boat {
 
 	@CollectionTable(name = "ship_position", joinColumns = @JoinColumn(name = "ship_id"))
 	@Column(name = "position")
+	@Convert(converter = PositionConverter.class)
 	private Position centerPosition;
 
 	@CollectionTable(name = "ship_orientation", joinColumns = @JoinColumn(name = "ship_id"))

@@ -1,6 +1,7 @@
 package barco;
 
 import position.Position;
+import position.PositionConverter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class Battleship extends Boat {
 	@ElementCollection
 	@CollectionTable(name = "battleship_containers", joinColumns = @JoinColumn(name = "ship_id"))
 	@Column(name = "containers")
+	@Convert(converter = PositionConverter.class)
 	private List<Position> containers;
 	private int hitContainers = 0;
 	public Battleship() {
