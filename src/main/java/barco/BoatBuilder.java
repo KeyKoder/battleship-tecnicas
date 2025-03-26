@@ -1,27 +1,32 @@
 package barco;
 
 import position.Position;
+import tablero.Orientation;
 
 public class BoatBuilder {
 	private Boat boat;
 
 	public BoatBuilder createCanoe() {
-		Canoe canoe = new Canoe();
+		this.boat = new Canoe();
 		return this;
 	}
 
 	public BoatBuilder createFrigate() {
-		Frigate frigate = new Frigate();
+		this.boat = new Frigate();
 		return this;
 	}
 
 	public BoatBuilder createBattleship() {
-		Battleship battleship = new Battleship();
+		this.boat = new Battleship();
 		return this;
 	}
 
-	public BoatBuilder setPosition(int x, int y) {
-		boat.setPosition(new Position(x, y).toString());
+	public BoatBuilder setPosition(Position position) {
+		boat.setCenterPosition(position);
+		return this;
+	}
+	public BoatBuilder setOrientation(Orientation orientation) {
+		boat.setOrientation(orientation);
 		return this;
 	}
 

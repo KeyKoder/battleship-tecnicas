@@ -1,46 +1,155 @@
 import barco.*;
+import position.Position;
+import tablero.Orientation;
+import tablero.Tablero;
+import tablero.TableroBuilder;
 import utils.BoatDAO;
 import utils.HibernateUtil;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Main {
+	private static final int MAX_SHIPS = 3;
+	private static final Random random = new Random();
+	private static final Scanner scanner = new Scanner(System.in);
+	private static final int BOARD_WIDTH = 10;
+	private static final int BOARD_HEIGHT = 10;
+
 	public static void main(String[] args) {
-		// Inicializar Hibernate
-		HibernateUtil.getSessionFactory();
+		Tablero player1Tablero = configurePlayerTablero(1, null);
+		Tablero player2Tablero = configurePlayerTablero(2, null);
 
-		// Crear un DAO para manejar los barcos
-		BoatDAO boatDAO = new BoatDAO();
+		// Comenzar el juego
+		boolean gameOn = true;
+		Tablero tableroActual = player1Tablero;
+		Tablero tableroOpuesto = player2Tablero;
+		int playerTurn = 1;
+		while (gameOn) {
+			System.out.println("Turno del Jugador " + playerTurn + ":");
+			System.out.println(tableroOpuesto.toString(false));
+			System.out.println();
+			System.out.println(tableroActual.toString());
 
-		// Crear y guardar un acorazado
-		Battleship battleship = new Battleship();
-		Set<String> battleshipCoordinates = new HashSet<>();
-		battleshipCoordinates.add("(1, 1)");
-		battleshipCoordinates.add("(1, 2)");
-		battleshipCoordinates.add("(1, 3)");
-		battleshipCoordinates.add("(1, 4)");
-		battleshipCoordinates.add("(1, 5)");
-		battleship.setPosition(battleshipCoordinates);
-		boatDAO.saveShip(battleship);
+			System.out.println("Ingrese las coordenadas (x,y) para el ataque (ejemplo: 1,1):");
+			Position attackPosition = readPosition();
+			if (tableroOpuesto.getBoatAt(attackPosition) != null) {
+				System.out.println("Atacando en " + attackPosition + "...");
+				Boat attackedBoat = tableroOpuesto.getBoatAt(attackPosition);
+				if (attackedBoat.positionHits(attackPosition)) {
+					if(attackedBoat.isSunk()) System.out.println("¡Tocado y Hundido!");
+					else System.out.println("¡Tocado!");
+				}
+			} else {
+				System.out.println("¡Agua!");
+			}
+			tableroOpuesto.markCell(attackPosition);
 
-		// Crear y guardar una fragata
-		Frigate frigate = new Frigate();
-		Set<String> frigateCoordinates = new HashSet<>();
-		frigateCoordinates.add("(2, 1)");
-		frigateCoordinates.add("(2, 2)");
-		frigateCoordinates.add("(2, 3)");
-		frigate.setPosition(frigateCoordinates);
-		boatDAO.saveShip(frigate);
+			// Verificar si el jugador 2 ha perdido
+			if (allBoatsSunk(tableroOpuesto)) {
+				System.out.println("¡Jugador 1 gana!");
+				gameOn = false;
+				break;
+			}
 
-		// Crear y guardar una canoa
-		Canoe canoe = new Canoe();
-		Set<String> canoeCoordinates = new HashSet<>();
-		canoeCoordinates.add("(3, 1)");
-		canoe.setPosition(canoeCoordinates);
-		boatDAO.saveShip(canoe);
+			if(playerTurn == 1) {
+				tableroActual = player2Tablero;
+				tableroOpuesto = player1Tablero;
+				playerTurn = 2;
+			}else {
+				tableroActual = player1Tablero;
+				tableroOpuesto = player2Tablero;
+				playerTurn = 1;
+			}
+		}
+	}
 
-		// Cerrar la sesión de Hibernate
-		HibernateUtil.shutdown();
+	private static Tablero configurePlayerTablero(int playerNumber, BoatDAO shipDAO) {
+		TableroBuilder boardBuilder = new TableroBuilder(BOARD_WIDTH, BOARD_HEIGHT);
+		System.out.println("Configuración de barcos para el Jugador " + playerNumber + ":");
+
+		BoatBuilder boatBuilder = new BoatBuilder();
+		for (int i = 0; i < MAX_SHIPS; i++) {
+			System.out.println("Seleccione el tipo de barco (1: Acorazado, 2: Fragata, 3: Canoa): ");
+			try {
+				int choice = scanner.nextInt();
+
+				switch (choice) {
+					case 1:
+						boatBuilder.createBattleship();
+						break;
+					case 2:
+						boatBuilder.createFrigate();
+						break;
+					case 3:
+						boatBuilder.createCanoe();
+						break;
+					default:
+						System.out.println("Opción no válida. Intente de nuevo.");
+						i--; // Decrementar para repetir la selección
+						scanner.nextLine();
+						continue;
+				}
+			}catch (InputMismatchException e) {
+				System.out.println("Opción no válida. Intente de nuevo.");
+				i--;
+				scanner.nextLine();
+				continue;
+			}
+
+			System.out.println("Ingrese las coordenadas (x,y) para el barco (ejemplo: 1,1):");
+			boatBuilder.setPosition(readPosition());
+
+			System.out.println("Ingrese la orientación del barco (H / V):");
+			boatBuilder.setOrientation(readOrientation());
+
+			boardBuilder.addBoat(boatBuilder.build());
+			//shipDAO.saveBoat(ship); // Guardar el barco en la base de datos
+		}
+
+		return boardBuilder.build();
+	}
+
+	private static Position readPosition() {
+		Position pos = new Position();
+		while (true) {
+			String input = scanner.next();
+			String[] parts = input.split(",");
+			if (parts.length == 2) {
+				try {
+					int x = Integer.parseInt(parts[0].trim());
+					int y = Integer.parseInt(parts[1].trim());
+					if (x >= 1 && x <= BOARD_WIDTH && y >= 1 && y <= BOARD_HEIGHT) {
+						pos.setX(x-1);
+						pos.setY(y-1);
+						break;
+					} else {
+						System.out.println("Coordenadas fuera de rango. Deben estar entre (1,1) y (" + BOARD_WIDTH + "," + BOARD_HEIGHT + ").");
+					}
+				} catch (NumberFormatException e) {
+					System.out.println("Entrada no válida. Intente de nuevo.");
+				}
+			} else {
+				System.out.println("Formato incorrecto. Debe ser (x,y).");
+			}
+		}
+		return pos;
+	}
+
+	private static Orientation readOrientation() {
+		while(true) {
+			String input = scanner.next();
+			if(input.equalsIgnoreCase("h")) return Orientation.HORIZONTAL;
+			if(input.equalsIgnoreCase("v")) return Orientation.VERTICAL;
+			System.out.println("Formato incorrecto. Debe ser 'H' o 'V'.");
+		}
+	}
+
+	private static boolean allBoatsSunk(Tablero board) {
+		for (Boat ship : board.getBoats()) {
+			if (!ship.isSunk()) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

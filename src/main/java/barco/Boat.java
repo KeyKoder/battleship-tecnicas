@@ -1,8 +1,9 @@
 package barco;
 
+import position.Position;
+import tablero.Orientation;
+
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "ship")
@@ -15,9 +16,19 @@ public abstract class Boat {
 	private int size;
 
 	@ElementCollection
-	@CollectionTable(name = "ship_coordinates", joinColumns = @JoinColumn(name = "ship_id"))
-	@Column(name = "coordinate")
-	private Set<String> position = new HashSet<>();
+	@CollectionTable(name = "ship_position", joinColumns = @JoinColumn(name = "ship_id"))
+	@Column(name = "position")
+	private Position centerPosition;
+
+	@ElementCollection
+	@CollectionTable(name = "ship_orientation", joinColumns = @JoinColumn(name = "ship_id"))
+	@Column(name = "orientation")
+	private Orientation orientation;
+
+	@ElementCollection
+	@CollectionTable(name = "ship_hits", joinColumns = @JoinColumn(name = "ship_id"))
+	@Column(name = "hits")
+	private int hits;
 
 	public Boat() {}
 
@@ -51,11 +62,36 @@ public abstract class Boat {
 		this.size = size;
 	}
 
-	public Set<String> getPosition() {
-		return position;
+	public Position getCenterPosition() {
+		return centerPosition;
 	}
 
-	public void setPosition(Set<String> coordinates) {
-		this.position = coordinates;
+	public void setCenterPosition(Position centerPosition) {
+		this.centerPosition = centerPosition;
+	}
+
+	public Orientation getOrientation() {
+		return orientation;
+	}
+
+	public void setOrientation(Orientation orientation) {
+		this.orientation = orientation;
+	}
+
+	public boolean positionHits(Position position) {
+		if(orientation == Orientation.HORIZONTAL) {
+			if(Math.abs(position.getX() - this.centerPosition.getX()) < this.size/2f) {
+				return true;
+			}
+		}else if(orientation == Orientation.VERTICAL) {
+			if(Math.abs(position.getY() - this.centerPosition.getY()) < this.size/2f) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isSunk() {
+		return this.hits == this.size;
 	}
 }

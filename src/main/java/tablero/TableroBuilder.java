@@ -12,8 +12,8 @@ public class TableroBuilder {
 		this.tablero = new Tablero(width, height);
 	}
 
-	public TableroBuilder addBoat(Boat boat, Set<Position> positions) {
-		tablero.addBoat(boat, positions);
+	public TableroBuilder addBoat(Boat boat) {
+		tablero.addBoat(boat);
 		return this;
 	}
 

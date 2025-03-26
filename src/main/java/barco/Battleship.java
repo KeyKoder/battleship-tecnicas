@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.HashMap;
 
-@Entitçy
+@Entity
 @Table(name = "battleships")
 public class Battleship extends Boat {
 	public Battleship() {
